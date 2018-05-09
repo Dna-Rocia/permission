@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+
+
+    <bean id="propertyConfigurer"  class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="locations">
+            <list>
+                <value>classpath:setting.properties</value>
+            </list>
+        </property>
+    </bean>
+
+
+    <!--数据源 连接数据库-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+        <property name="driverClassName" value="${db.driverClassName}"/>
+        <property name="url" value="${db.url}"/>
+        <property name="username" value="${db.username}"/>
+        <property name="password" value="${db.password}"/>
+        <property name="initialSize" value="3"/>
+        <property name="minIdle" value="3"/> <!--最小空余数量-->
+        <property name="maxActive" value="20"/> <!--数据连接池大小，活跃数量-->
+        <property name="maxWait" value="60000"/> <!--最大等待时间-->
+        <property name="filters" value="stat,wall"/>
+    </bean>
+
+    <!--连接数据库 sql文件-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <property name="dataSource" ref="dataSource"/>
+        <property name="mapperLocations" value="classpath:mapper/*.xml"/>
+    </bean>
+
+    <!-- 连接数据库的类 dao的扫描 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.roya.dao"/>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+    </bean>
+
+
+    <!-- 事务管理器 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- 启用事务注解 -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!--  druid 的 filter stat 负责数据库相关的-->
+    <bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
+        <property name="slowSqlMillis" value="3000"/> <!--慢sql-->
+        <property name="logSlowSql" value="true"/> <!-- 发现慢sql是否进行log记录-->
+        <property name="mergeSql" value="true"/> <!-- 在sql代码多行在log中进行记录 -->
+    </bean>
+
+    <!-- druid 的 filter wall 监控的db -->
+    <bean id="wall-filter" class="com.alibaba.druid.wall.WallFilter">
+        <property name="dbType" value="mysql"/>
+    </bean>
+
+
+
+
+
+
+
+</beans>

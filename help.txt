@@ -1,0 +1,264 @@
+配置的问题
+
+
+ mybatis-config.xml
+ <settings>
+        允许在嵌套语句中使用分页（RowBounds）。如果允许使用则设置为false。
+        <setting name="safeRowBoundsEnabled" value="true"/>
+        全局地开启或关闭配置文件中的所有映射器已经配置的任何缓存。 false:不常用
+         <setting name="cacheEnabled" value="false"/>
+        允许 JDBC 支持自动生成主键，需要驱动兼容。 如果设置为 true 则这个设置强制使用自动生成主键，尽管一些驱动不能兼容但仍可正常工作
+         <setting name="useGeneratedKeys" value="true"/>
+    </settings>
+
+
+
+========================================================================================================================
+spring-servlet.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:mvc="http://www.alibaba.com/schema/stat"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.alibaba.com/schema/stat http://www.alibaba.com/schema/stat.xsd">
+
+    <!-- 上下文的注解能被spring beans管理 -->
+    <context:annotation-config />
+
+    <!-- 启动注解驱动的spring mvc 功能-->
+    <mvc:annotation-driven/>
+
+    <!-- 启动包扫描的功能-->
+    <context:component-scan base-package="com.roya.controller"/>
+    <context:component-scan base-package="com.roya.service"/>
+
+    <!-- 根据请求路径寻找实现接口 -->
+   <!-- <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"/>-->
+    <!-- 视图渲染 -->
+    <bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
+    <!--  mapping 请求返回的json  -->
+    <bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
+    <!--  mapping 请求返回的view  -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/views/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+</beans>
+
+
+========================================================================================================================
+applicationContext.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+
+
+    <bean id="propertyConfigurer"  class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="locations">
+            <list>
+                <value>classpath:setting.properties</value>
+            </list>
+        </property>
+    </bean>
+
+
+    <!--数据源 连接数据库-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+        <property name="driverClassName" value="${db.driverClassName}"/>
+        <property name="url" value="${db.url}"/>
+        <property name="username" value="${db.username}"/>
+        <property name="password" value="${db.password}"/>
+        <property name="initialSize" value="3"/>
+        <property name="minIdle" value="3"/> <!--最小空余数量-->
+        <property name="maxActive" value="20"/> <!--数据连接池大小，活跃数量-->
+        <property name="maxWait" value="60000"/> <!--最大等待时间-->
+        <property name="filters" value="stat,wall"/>
+    </bean>
+
+    <!--连接数据库 sql文件-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <property name="dataSource" ref="dataSource"/>
+        <property name="mapperLocations" value="classpath:mapper/*.xml"/>
+    </bean>
+
+    <!-- 连接数据库的类 dao的扫描 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.roya.dao"/>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+    </bean>
+
+
+    <!-- 事务管理器 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- 启用事务注解 -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!--  druid 的 filter stat 负责数据库相关的-->
+    <bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
+        <property name="slowSqlMillis" value="3000"/> <!--慢sql-->
+        <property name="logSlowSql" value="true"/> <!-- 发现慢sql是否进行log记录-->
+        <property name="mergeSql" value="true"/> <!-- 在sql代码多行在log中进行记录 -->
+    </bean>
+
+    <!-- druid 的 filter wall 监控的db -->
+    <bean id="wall-filter" class="com.alibaba.druid.wall.WallFilter">
+        <property name="dbType" value="mysql"/>
+    </bean>
+
+</beans>
+
+
+
+
+
+========================================================================================================================
+logback.xml
+
+<!--scan：配置文件发生改变，日志文件将重新加载，默认值true  scanPeriod:配置文件是否有修改的时间间隔，当前者为true的时候，这个动作才生效-->
+<configuration scan="true" scanPeriod="60 seconds">
+    <!--log的输出形式  STOUT:标准输出-->
+    <appender name="STOUT" class="ch.qos.logback.core.ConsoleAppender">
+          <encoder>
+              <!--%d:日期  [%thread]:进程  %-5level:级别从左显示5个字符宽度  %logger：日志名称  -：展示分割符 %msg:详细信息 %n：换行符-->
+              <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>
+          </encoder>
+      </appender>
+
+    特殊的log配置
+    <appender name="permission" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--tomcat主路径下找到logs文件夹-->
+        <file>${catalina.home}/logs/permission.log</file>
+            <!--文件的压缩规则-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--告诉rollingPolicy压缩文件的名字-->
+            <FileNamePattern>${catalina.home}/logs/permission.%d{yyyy-MM-dd}.log.gz</FileNamePattern>
+        </rollingPolicy>
+
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <!--日志输出的格式-->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>
+        </layout>
+    </appender>
+
+    <logger name="xxx" level="INFO">
+        <appender-ref ref="permission"/>
+    </logger>
+
+    <!--log名称-->
+    <logger> </logger>
+
+    <!--告诉appender应该是用什么级别进行接收日志
+        日志级别：trace < debug < info < warn < error
+    -->
+    <root level="INFO"></root>
+
+</configuration>
+
+
+
+
+========================================================================================================================
+web.xml
+
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+
+    <display-name>Archetype Created Web Application</display-name>
+
+    <!-- 负责监听上下文spring beans 的加载 -->
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+
+    <!-- Spring beans 配置文件所在目录 -->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:applicationContext.xml</param-value>
+    </context-param>
+
+    <!-- Spring mvc 配置 DispatcherServlet:处理（分发）请求-->
+    <servlet>
+        <servlet-name>spring</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>spring</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+    <!-- 项目 Encoding -->
+    <filter>
+        <filter-name>encodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>forceEncoding</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>encodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!-- druid 监控的基本访问 -->
+    <servlet>
+        <servlet-name>DruidStatServlet</servlet-name>
+        <servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class>
+        <init-param>
+            <param-name>loginUsername</param-name>
+            <param-value>druid</param-value>
+        </init-param>
+        <init-param>
+            <param-name>loginPassword</param-name>
+            <param-value>druid</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DruidStatServlet</servlet-name>
+        <url-pattern>/sys/druid/*</url-pattern>
+    </servlet-mapping>
+
+    <filter>
+        <filter-name>DruidWebStatFilter</filter-name>
+        <filter-class>com.alibaba.druid.support.http.WebStatFilter</filter-class>
+        <init-param>
+            <param-name>exclusions</param-name>
+            <param-value>*.js,*.css,*.jpg,*.png,*.ico,*.gif,/sys/druid/*</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>DruidWebStatFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+
+</web-app>
+
+
+
+
+
+
+

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <!-- 配置 -->
+    <settings>
+        <setting name="safeRowBoundsEnabled" value="true"/>
+        <setting name="cacheEnabled" value="false"/>
+        <setting name="useGeneratedKeys" value="true"/>
+    </settings>
+    
+    <!--  别名
+    <typeAliases>
+
+    </typeAliases>
+    -->
+
+    <!--在mybatis上做一些监听，监控sql
+    <plugins>
+        <plugin interceptor=""></plugin>
+    </plugins>
+    -->
+
+
+    <!--
+    <typeHandlers>
+        <typeHandler handler=""/>
+    </typeHandlers>
+    -->
+    
+</configuration>
