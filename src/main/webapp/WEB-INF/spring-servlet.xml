@@ -13,6 +13,11 @@
 
     <!-- 启动注解驱动的spring mvc 功能-->
     <mvc:annotation-driven/>
+    <!--spring mvc 请求拦截-->
+    <mvc:interceptors>
+        <bean class="com.roya.common.HttpInterceptor"/>
+    </mvc:interceptors>
+
 
     <!-- 启动包扫描的功能-->
     <context:component-scan base-package="com.roya.controller"/>
@@ -20,6 +25,9 @@
 
     <!-- 根据请求路径寻找实现接口 -->
    <!-- <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"/>-->
+
+    <!--spring上下文  lazy-init：false:懒加载不启动，应在启动时加载-->
+    <bean class="com.roya.common.ApplicationContextHelper" lazy-init="false"/>
     <!--请求时全局异常-->
     <bean class="com.roya.common.SpringExceptionResolver"/>
     <!-- 视图渲染 -->
