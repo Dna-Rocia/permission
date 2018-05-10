@@ -12,7 +12,7 @@ import java.util.List;
  * Created by idea
  * description :
  *
- * @author Loyaill
+ * @author Loyail
  * @version 2.0.0
  * CreateDate 2018-05-09-16:15
  * @since 1.8JDK
@@ -24,7 +24,7 @@ public class TestVo {
 	private String msg;
 	@NotNull
 	private Integer id;
-	@NotEmpty
+
 	private List<String> list;
 
 
