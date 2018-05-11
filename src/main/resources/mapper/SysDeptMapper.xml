@@ -147,4 +147,38 @@
     </select>
 
 
+    <select id="childListByLevel" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from sys_dept
+        WHERE
+          level LIKE  #{level} || '.%'
+    </select>
+
+
+    <select id="batchUpdateLevel" parameterType="map">
+        <foreach collection="sysDeptList" item="sysDept" separator=";">
+            UPDATE sys_dept
+            SET
+              level = #{sysDept.level}
+            Where
+              id = #{sysDept.id}
+        </foreach>
+    </select>
+    
+    
+    <select id="countByNameAndParentId" parameterType="map" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM
+           sys_dept
+        WHERE
+            name = #{name}
+            <if test="parentId != null ">
+                and  parent_id = #{parentId}
+            </if>
+            <if test="id != null ">
+                and id  != #{id}
+            </if>
+    </select>
 </mapper>

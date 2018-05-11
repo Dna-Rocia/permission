@@ -28,7 +28,7 @@ public class JsonData {
 	}
 
 	public  static  JsonData success(){
-		return new JsonData(false);
+		return new JsonData(true);
 	}
 
 

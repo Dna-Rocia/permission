@@ -13,11 +13,17 @@
 
     <!-- 启动注解驱动的spring mvc 功能-->
     <mvc:annotation-driven/>
+
     <!--spring mvc 请求拦截-->
     <mvc:interceptors>
         <bean class="com.roya.common.HttpInterceptor"/>
     </mvc:interceptors>
 
+    <!-- 加载页面引用资源-->
+    <mvc:resources mapping="/js/**" location="/js/"/>
+    <mvc:resources mapping="/css/**" location="/css/"/>
+    <mvc:resources mapping="/assets/**" location="/assets/"/>
+    <mvc:resources mapping="/bootstrap3.3.5/**" location="/bootstrap3.3.5/"/>
 
     <!-- 启动包扫描的功能-->
     <context:component-scan base-package="com.roya.controller"/>
@@ -36,7 +42,7 @@
     <bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
     <!--  mapping 请求返回的view  -->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="prefix" value="/views/"/>
+        <property name="prefix" value="/WEB-INF/views/"/>
         <property name="suffix" value=".jsp"/>
     </bean>
 

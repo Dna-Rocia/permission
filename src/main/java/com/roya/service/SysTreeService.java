@@ -49,20 +49,19 @@ public class SysTreeService {
 		Multimap<String,DeptLevelDto> levelDeptMap = ArrayListMultimap.create();
 		//（根目录）一级部门
 		List<DeptLevelDto> rootList = Lists.newArrayList();
-		for (DeptLevelDto dto: rootList
-			 ) {
+		for (DeptLevelDto dto: deptLevelDtoList) {
 			levelDeptMap.put(dto.getLevel(),dto);
 			if (LevelUtil.ROOT.equals(dto.getLevel())){
 				rootList.add(dto);
 			}
 		}
 		//对root（根目录）排序(从小到大)
-		Collections.sort(rootList, comparator
-//			new Comparator<DeptLevelDto>() {
-//			public int compare(DeptLevelDto o1, DeptLevelDto o2) {
-//				return o1.getSeq() -o2.getSeq();
-//			}
-//		}
+		Collections.sort(rootList,
+			new Comparator<DeptLevelDto>() {
+			public int compare(DeptLevelDto o1, DeptLevelDto o2) {
+				return o1.getSeq() -o2.getSeq();
+			}
+		}
 		);
 		//递归生成层级树
 		transformDeptTree(rootList,LevelUtil.ROOT,levelDeptMap);
