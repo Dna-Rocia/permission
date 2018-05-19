@@ -1,7 +1,6 @@
 package com.roya.config;
 
 import com.roya.utils.DesUtil;
-import com.roya.utils.ToolKit;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -19,45 +18,29 @@ import java.util.Properties;
  */
 public class EncryptablePropertyPlaceholderConfig extends PropertyPlaceholderConfigurer {
 
-
-	/******************************JDBC相关BEGIN***************************************/
-	public static final String JDBC_DESC_KEY = ToolKit.bytes2Hex("0002000200020002".getBytes());
-
-	/**数据库类型**/
-	public static final String JDBC_DATASOURCE_DRIVERCLASSNAME_KEY = "db.driverClassName";
-
-	public static final String JDBC_DATASOURCE_URL_KEY = "db.url";
-
-	public static final String JDBC_DATASOURCE_USERNAME_KEY = "db.username";
-
-	public static final String JDBC_DATASOURCE_PASSWORD_KEY = "db.password";
-
-	/******************************JDBC相关END***************************************/
-
-
-
+	public static final String KEY = DesUtil.PASSWORD_CRYPT_KEY;
 
 	protected void processProperties(ConfigurableListableBeanFactory beanFactory, Properties props)
 			throws BeansException {
 		try {
-			String username = props.getProperty(JDBC_DATASOURCE_USERNAME_KEY);
+			String username = props.getProperty(ConfigConstant.JDBC_DATASOURCE_USERNAME_KEY);
 			if (username != null) {
-				props.setProperty(JDBC_DATASOURCE_USERNAME_KEY, DesUtil.Decrypt(username, ToolKit.hex2Bytes(JDBC_DESC_KEY)));
+				props.setProperty(ConfigConstant.JDBC_DATASOURCE_USERNAME_KEY, DesUtil.Decrypt(username,KEY ));
 			}
 
-			String password = props.getProperty(JDBC_DATASOURCE_PASSWORD_KEY);
+			String password = props.getProperty(ConfigConstant.JDBC_DATASOURCE_PASSWORD_KEY);
 			if (password != null) {
-				props.setProperty(JDBC_DATASOURCE_PASSWORD_KEY, DesUtil.Decrypt(password, ToolKit.hex2Bytes(JDBC_DESC_KEY)));
+				props.setProperty(ConfigConstant.JDBC_DATASOURCE_PASSWORD_KEY, DesUtil.Decrypt(password, KEY));
 			}
 
-			String url = props.getProperty(JDBC_DATASOURCE_URL_KEY);
+			String url = props.getProperty(ConfigConstant.JDBC_DATASOURCE_URL_KEY);
 			if (url != null) {
-				props.setProperty(JDBC_DATASOURCE_URL_KEY, DesUtil.Decrypt(url,  ToolKit.hex2Bytes(JDBC_DESC_KEY)));
+				props.setProperty(ConfigConstant.JDBC_DATASOURCE_URL_KEY, DesUtil.Decrypt(url,  KEY));
 			}
 
-			String driverClassName = props.getProperty(JDBC_DATASOURCE_DRIVERCLASSNAME_KEY);
+			String driverClassName = props.getProperty(ConfigConstant.JDBC_DATASOURCE_DRIVERCLASSNAME_KEY);
 			if(driverClassName != null){
-				props.setProperty(JDBC_DATASOURCE_DRIVERCLASSNAME_KEY, DesUtil.Decrypt(driverClassName, ToolKit.hex2Bytes(JDBC_DESC_KEY)));
+				props.setProperty(ConfigConstant.JDBC_DATASOURCE_DRIVERCLASSNAME_KEY, DesUtil.Decrypt(driverClassName, KEY));
 			}
 
 			super.processProperties(beanFactory, props);
