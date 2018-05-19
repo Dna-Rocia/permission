@@ -13,6 +13,7 @@
 
     <!-- 启动注解驱动的spring mvc 功能-->
     <mvc:annotation-driven/>
+    <mvc:default-servlet-handler/>
 
     <!--spring mvc 请求拦截-->
     <mvc:interceptors>
