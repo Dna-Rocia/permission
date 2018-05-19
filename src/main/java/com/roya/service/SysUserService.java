@@ -8,10 +8,7 @@ import com.roya.dao.SysUserMapper;
 import com.roya.exception.ParamException;
 import com.roya.model.SysUser;
 import com.roya.param.UserParam;
-import com.roya.utils.BeanValidator;
-import com.roya.utils.MD5Util;
-import com.roya.utils.PasswordUtil;
-import com.roya.utils.PhoneUtil;
+import com.roya.utils.*;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -42,7 +39,7 @@ public class SysUserService {
 			throw new ParamException("邮箱已被占用");
 		}
 		String password = PasswordUtil.randomPassword();
-		password = "123456";
+		//password = "123456";
 		String encryptedPassword = MD5Util.encrypt(password);
 		String encryptedPhone = PhoneUtil.encryptPhone(param.getTelephone());
 
@@ -56,13 +53,11 @@ public class SysUserService {
 		sysUser.setOperateIp("127.0.0.1"); //todo
 		sysUser.setOperateTime(new Date());
 
-
-		//todo  sendEmail 发送成功之后才能进行数据的插入
-
-
-
-
-		userMapper.insertSelective(sysUser);
+		boolean flag = SendMailUtil.SimpleMessageMail(param.getMail(),"激活密码","您好！欢迎注册权限管理系统，激活账户后即可使用，" +
+									"\n\n您的密码："+encryptedPassword+"\n\n请勿转发他人，以免给您造成不必要的损失");
+		if (flag){
+			userMapper.insertSelective(sysUser);
+		}
 
 	}
 

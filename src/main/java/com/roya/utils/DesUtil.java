@@ -115,6 +115,9 @@ public class DesUtil {
 		return Decrypt(sSrc,sKey.getBytes());
 	}
 
+	public static String Decrypt(String sSrc) throws Exception {
+		return Decrypt(sSrc,PASSWORD_CRYPT_KEY.getBytes());
+	}
 
 
 
@@ -176,10 +179,9 @@ public class DesUtil {
 
 //	public static void main(String[] args) {
 //		try {
-//			System.out.println("密文 ：" + Encrypt("jdbc:mysql://192.168.1.92:3307/shiro_test?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=true"));
+//			System.out.println("密文 ：" + Encrypt(""));
 //
-//			System.out.println("明文 ："+ Decrypt("B6+0xPF1pwS5MbiBOSkCBddFQFKKBDtRv8oU1HuXLvepPCM98j27nl8U/DxJDORTlOdcndwLmjVpT6L5w+Ac1mdv00w6TMdcS0ltCePZ+vQKUFH0HBXJHwdAe2TSs7jx3/L/TJ9sUeQMXunq7XrDXUpMTS+qCG13G1Ewh08AwN8=",PASSWORD_CRYPT_KEY));
-//
+//			System.out.println("明文 ："+ Decrypt("",PASSWORD_CRYPT_KEY));
 //
 //		} catch (Exception e) {
 //			e.printStackTrace();

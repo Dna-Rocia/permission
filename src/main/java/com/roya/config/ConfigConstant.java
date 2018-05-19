@@ -12,7 +12,6 @@ public class ConfigConstant {
 
 
 	/******************************JDBC相关BEGIN***************************************/
-//	public static final String JDBC_DESC_KEY = ToolKit.bytes2Hex("0002000200020002".getBytes());
 
 	/**数据库类型**/
 	public static final String JDBC_DATASOURCE_DRIVERCLASSNAME_KEY = "db.driverClassName";
@@ -24,6 +23,19 @@ public class ConfigConstant {
 	public static final String JDBC_DATASOURCE_PASSWORD_KEY = "db.password";
 
 	/******************************JDBC相关END***************************************/
+
+
+
+
+	/******************************MAIL相关BEGIN***************************************/
+
+	public static final String MAIL_USERNAME_KEY = "mail.username";
+
+	public static final String MAIL_PASSWORD_KEY = "mail.password";
+
+	/******************************MAIL相关END***************************************/
+
+
 
 
 

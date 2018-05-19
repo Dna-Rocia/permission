@@ -1,5 +1,8 @@
 package com.roya.common;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
@@ -13,13 +16,15 @@ import javax.annotation.Resource;
  * @since 1.8JDK
  * CreateDate 2018-05-18-13:36
  */
-
+@Setter@Getter
 public class MailSender {
 
 		@Resource
 		private JavaMailSender mailSender;
 
-		public void send(SimpleMailMessage mail) {
+		private String senderAddress;
+
+		public void send(SimpleMailMessage mail)throws MailException {
 			mailSender.send(mail);
 		}
 
