@@ -1,6 +1,7 @@
 package com.roya.service;
 
 import com.google.common.base.Preconditions;
+import com.roya.common.RequestHolder;
 import com.roya.dao.SysDeptMapper;
 import com.roya.exception.ParamException;
 import com.roya.model.SysDept;
@@ -38,7 +39,7 @@ public class SysDeptService {
 		SysDept sysDept = SysDept.builder().name(param.getName()).parentId(param.getParentId()).seq(param.getSeq()).remark(param.getRemark()).build();
 		//实例的层级设置
 		sysDept.setLevel(LevelUtil.calculateLevel(getLevel(param.getParentId()),param.getParentId()));
-		sysDept.setOperator("system"); //todo
+		sysDept.setOperator(RequestHolder.getCurrentUser().getUsername());
 		sysDept.setOperateTime(new Date());
 		sysDept.setOperateIp("127.0.0.1"); //todo
 		int num = sysDeptMapper.insertSelective(sysDept);
@@ -85,7 +86,8 @@ public class SysDeptService {
 		}
 		SysDept after = SysDept.builder().id(param.getId()).name(param.getName()).parentId(param.getParentId()).seq(param.getSeq()).remark(param.getRemark()).build();
 		after.setLevel(LevelUtil.calculateLevel(getLevel(param.getParentId()),param.getParentId()));
-		after.setOperator("system-update"); //todo
+
+		after.setOperator(RequestHolder.getCurrentUser().getUsername());
 		after.setOperateIp("127.0.0.1");//todo
 		after.setOperateTime(new Date());
 
