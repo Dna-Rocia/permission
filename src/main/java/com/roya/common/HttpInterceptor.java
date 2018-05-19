@@ -45,6 +45,7 @@ public class HttpInterceptor extends HandlerInterceptorAdapter{
 //		long startTime = (Long) request.getAttribute(START_TIME);
 //		long endTime = System.currentTimeMillis();
 //		log.info("request finished.  uri:{},params:{},costTime:{}",uri, JsonMapper.obj2String(map),endTime-startTime);
+		removeThreadLocalInfo();
 	}
 
 	/**
@@ -57,5 +58,13 @@ public class HttpInterceptor extends HandlerInterceptorAdapter{
 		long startTime = (Long) request.getAttribute(START_TIME);
 		long endTime = System.currentTimeMillis();
 		log.info("request completion.  uri:{},params:{},costTime:{}",uri, JsonMapper.obj2String(map),endTime-startTime);
+		removeThreadLocalInfo();
 	}
+
+
+	public void removeThreadLocalInfo(){
+		RequestHolder.remove();
+	}
+
+
 }
