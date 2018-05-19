@@ -11,7 +11,8 @@ import java.util.Properties;
 /**
  * Created by idea
  * description :
- *
+ *		JDBC 的加载配置文件
+ *	作为自定义类加到配置文件中，解密使用
  * @author Loyail
  * @since 1.8JDK
  * CreateDate 2018-05-19-9:12
