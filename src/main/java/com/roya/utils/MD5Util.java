@@ -56,14 +56,20 @@ public class MD5Util {
 	}
 
 
+	//解密
 	public static String md5Decode(String str) {
 		return convertMD5(convertMD5(str));
 	}
 
 
 //	public static void main(String[] args)throws Exception {
+//		//正常方向
 //		String s = new String("123456");
-//		System.out.println("encrypt :"+encrypt(s));
+//		System.out.println("原始：" + s);
+//		System.out.println("MD5后：" + encrypt(s));
+//		System.out.println("加密的：" + convertMD5(s));
+//		System.out.println("解密的：" + convertMD5(convertMD5(s)));
+//
 //	}
 
 

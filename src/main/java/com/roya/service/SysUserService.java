@@ -39,10 +39,8 @@ public class SysUserService {
 			throw new ParamException("邮箱已被占用");
 		}
 		String password = PasswordUtil.randomPassword();
-		//password = "123456";
 		String encryptedPassword = MD5Util.encrypt(password);
 		String encryptedPhone = PhoneUtil.encryptPhone(param.getTelephone());
-
 
 		SysUser sysUser = SysUser.builder()
 				.username(param.getUsername()).telephone(encryptedPhone)
@@ -54,7 +52,7 @@ public class SysUserService {
 		sysUser.setOperateTime(new Date());
 
 		boolean flag = SendMailUtil.SimpleMessageMail(param.getMail(),"激活密码","您好！欢迎注册权限管理系统，激活账户后即可使用，" +
-									"\n\n您的密码："+encryptedPassword+"\n\n请勿转发他人，以免给您造成不必要的损失");
+									"\n\n您的密码："+password+"\n\n请勿转发他人，以免给您造成不必要的损失");
 		if (flag){
 			userMapper.insertSelective(sysUser);
 		}
