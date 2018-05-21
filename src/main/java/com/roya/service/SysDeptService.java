@@ -7,6 +7,7 @@ import com.roya.exception.ParamException;
 import com.roya.model.SysDept;
 import com.roya.param.DeptParam;
 import com.roya.utils.BeanValidator;
+import com.roya.utils.IpUtil;
 import com.roya.utils.LevelUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
@@ -36,14 +37,17 @@ public class SysDeptService {
 			throw new ParamException("同一层级下存在相同名称的部门");
 		}
 		//创建实例
-		SysDept sysDept = SysDept.builder().name(param.getName()).parentId(param.getParentId()).seq(param.getSeq()).remark(param.getRemark()).build();
+		SysDept sysDept = SysDept.builder().
+				name(param.getName()).parentId(param.getParentId()).
+				seq(param.getSeq()).remark(param.getRemark()).build();
+
 		//实例的层级设置
 		sysDept.setLevel(LevelUtil.calculateLevel(getLevel(param.getParentId()),param.getParentId()));
 		sysDept.setOperator(RequestHolder.getCurrentUser().getUsername());
 		sysDept.setOperateTime(new Date());
-		sysDept.setOperateIp("127.0.0.1"); //todo
-		int num = sysDeptMapper.insertSelective(sysDept);
-		System.out.println(num);
+		sysDept.setOperateIp(IpUtil.getRemoteIp(RequestHolder.getCurrentRequest()));
+		sysDeptMapper.insertSelective(sysDept);
+
 	}
 
 	/**
@@ -88,7 +92,7 @@ public class SysDeptService {
 		after.setLevel(LevelUtil.calculateLevel(getLevel(param.getParentId()),param.getParentId()));
 
 		after.setOperator(RequestHolder.getCurrentUser().getUsername());
-		after.setOperateIp("127.0.0.1");//todo
+		after.setOperateIp(IpUtil.getRemoteIp(RequestHolder.getCurrentRequest()));
 		after.setOperateTime(new Date());
 
 		updateWithChild(before,after);

@@ -48,7 +48,7 @@ public class SysUserService {
 				.status(param.getStatus()).remark(param.getRemark())
 				.deptId(param.getDeptId()).build();
 		sysUser.setOperator(RequestHolder.getCurrentUser().getUsername());
-		sysUser.setOperateIp("127.0.0.1"); //todo
+		sysUser.setOperateIp(IpUtil.getRemoteIp(RequestHolder.getCurrentRequest()));
 		sysUser.setOperateTime(new Date());
 
 		boolean flag = SendMailUtil.SimpleMessageMail(param.getMail(),"激活密码","您好！欢迎注册权限管理系统，激活账户后即可使用，" +
@@ -94,7 +94,7 @@ public class SysUserService {
 				telephone(telephone).mail(param.getMail()).
 				status(param.getStatus()).remark(param.getRemark()).build();
 		after.setOperator(RequestHolder.getCurrentUser().getUsername());
-		after.setOperateIp("127.0.0.1"); //todo
+		after.setOperateIp(IpUtil.getRemoteIp(RequestHolder.getCurrentRequest()));
 		after.setOperateTime(new Date());
 
 		userMapper.updateByPrimaryKeySelective(after);
