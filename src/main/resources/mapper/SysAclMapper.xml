@@ -25,7 +25,45 @@
     from sys_acl
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+
+
+    <select id="countByAclModuleId" parameterType="map" resultType="int">
+        select
+            COUNT(1)
+        from
+            sys_acl
+        where
+            acl_module_id = #{aclModuleId,jdbcType=INTEGER}
+    </select>
+
+
+    <select id="listPageAclByModuleId" parameterType="map" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List" />
+        from
+            sys_acl
+        where
+            acl_module_id = #{aclModuleId,jdbcType=INTEGER}
+        order by seq asc,name asc
+        limit #{page.offset},#{page.pageSize}
+    </select>
+
+    <select id="countByNameAndAclModuleId" parameterType="map" resultType="int">
+        select
+            COUNT(1)
+        from
+            sys_acl
+        where
+            acl_module_id = #{aclModuleId,jdbcType=INTEGER}
+        and
+            `name` = #{name}
+        <if test="id != null">
+            and id != #{id}
+        </if>
+    </select>
+
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from sys_acl
     where id = #{id,jdbcType=INTEGER}
   </delete>
