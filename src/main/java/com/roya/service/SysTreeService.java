@@ -3,8 +3,11 @@ package com.roya.service;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
+import com.roya.dao.SysAclModuleMapper;
 import com.roya.dao.SysDeptMapper;
+import com.roya.dto.AclModuleLevelDto;
 import com.roya.dto.DeptLevelDto;
+import com.roya.model.SysAclModule;
 import com.roya.model.SysDept;
 import com.roya.utils.LevelUtil;
 import org.apache.commons.collections.CollectionUtils;
@@ -19,7 +22,7 @@ import java.util.List;
  * Created by idea
  * description :
  *		整个项目有很多树，用于计算树结构
- * @author Loyaill
+ * @author Loyail
  * @since 1.8JDK
  * CreateDate 2018-05-10-14:16
  */
@@ -28,7 +31,92 @@ public class SysTreeService {
 
 	@Resource
 	private SysDeptMapper deptMapper;
+	@Resource
+	private SysAclModuleMapper aclModuleMapper;
 
+
+
+
+	//region 权限模块树的计算
+	public List<AclModuleLevelDto>  aclModuleTree (){
+		List<SysAclModule> aclModuleList = aclModuleMapper.getAllAclModule();
+
+		List<AclModuleLevelDto>  aclModuleLevelDtos= Lists.newArrayList();
+
+		for (SysAclModule aclModule: aclModuleList) {
+			aclModuleLevelDtos.add(AclModuleLevelDto.adapt(aclModule));
+		}
+		return aclModuleList2Tree(aclModuleLevelDtos);
+	}
+
+	private List<AclModuleLevelDto> aclModuleList2Tree(List<AclModuleLevelDto>  aclModuleLevelDtos){
+		if (CollectionUtils.isEmpty(aclModuleLevelDtos)){
+			return Lists.newArrayList();
+		}
+		//level作为key —> [aclModule1,aclModule2,...权限模块list列表]作为value ,相当于Map<String,List<Object>>
+		Multimap<String,AclModuleLevelDto> levelAclModuleMap = ArrayListMultimap.create();
+
+		//（根目录）一级权限模块
+		List<AclModuleLevelDto> rootList = Lists.newArrayList();
+		for (AclModuleLevelDto dto: aclModuleLevelDtos) {
+			levelAclModuleMap.put(dto.getLevel(),dto);
+			if (LevelUtil.ROOT.equals(dto.getLevel())){
+				rootList.add(dto);
+			}
+		}
+		//对root（根目录）排序(从小到大)
+		Collections.sort(rootList,aclModuleLevelDtoComparator);
+
+		//递归生成层级树
+		transformAclModuleTree(rootList,LevelUtil.ROOT,levelAclModuleMap);
+		return  rootList;
+	}
+
+	//权限模块树的层级比较器
+	public  Comparator<AclModuleLevelDto> aclModuleLevelDtoComparator= new Comparator<AclModuleLevelDto>() {
+		public int compare(AclModuleLevelDto o1, AclModuleLevelDto o2) {
+			return o1.getSeq() - o2.getSeq();
+		}
+	};
+
+	/**
+	 * 遍历权限模块数据，生成相对应的树结构
+	 * @param dtoList （下一层） 模块数据
+	 * @param level （下一层）层级
+	 * @param levelAclModuleMap 所有数据
+	 */
+	public void transformAclModuleTree (List<AclModuleLevelDto> dtoList,String level, Multimap<String,AclModuleLevelDto> levelAclModuleMap){
+		for (int i = 0; i < dtoList.size(); i++) {
+//			遍历每层各个元素
+			AclModuleLevelDto dto = dtoList.get(i);
+//			处理当前层级的数据
+			String nextLevel = LevelUtil.calculateLevel(level,dto.getId());
+//			处理下一层
+			List<AclModuleLevelDto> tempAclModuleList =  (List<AclModuleLevelDto>)levelAclModuleMap.get(nextLevel);
+			if (CollectionUtils.isNotEmpty(tempAclModuleList)){
+				//排序
+				Collections.sort(tempAclModuleList,aclModuleLevelDtoComparator);
+				//设置下一层部门
+				dto.setAclModuleList(tempAclModuleList);
+				//进入下一层处理
+				transformAclModuleTree(tempAclModuleList,nextLevel,levelAclModuleMap);
+			}
+		}
+	}
+
+
+
+	//endregion
+
+
+
+
+
+
+
+
+
+	//region   部门树的计算
 	//计算部门树
 	public List<DeptLevelDto>  deptTree (){
 		List<SysDept> deptList = deptMapper.listDept();
@@ -56,13 +144,7 @@ public class SysTreeService {
 			}
 		}
 		//对root（根目录）排序(从小到大)
-		Collections.sort(rootList,
-			new Comparator<DeptLevelDto>() {
-			public int compare(DeptLevelDto o1, DeptLevelDto o2) {
-				return o1.getSeq() -o2.getSeq();
-			}
-		}
-		);
+		Collections.sort(rootList,deptLevelDtoComparator);
 		//递归生成层级树
 		transformDeptTree(rootList,LevelUtil.ROOT,levelDeptMap);
 		return  rootList;
@@ -87,9 +169,9 @@ public class SysTreeService {
 			List<DeptLevelDto> tempDeptList =  (List<DeptLevelDto>)levelDeptMap.get(nextLevel);
 			if (CollectionUtils.isNotEmpty(tempDeptList)){
 				//排序
-				Collections.sort(tempDeptList,comparator);
+				Collections.sort(tempDeptList,deptLevelDtoComparator);
 				//设置下一层部门
-				dto.setDeptLevelDtos(tempDeptList);
+				dto.setDeptList(tempDeptList);
 				//进入下一层处理
 				transformDeptTree(tempDeptList,nextLevel,levelDeptMap);
 			}
@@ -98,10 +180,14 @@ public class SysTreeService {
 
 	}
 
-		Comparator<DeptLevelDto> comparator = new Comparator<DeptLevelDto>() {
+	//部门树的层级比较器
+	public 	Comparator<DeptLevelDto> deptLevelDtoComparator = new Comparator<DeptLevelDto>() {
 			public int compare(DeptLevelDto o1, DeptLevelDto o2) {
 				return o1.getSeq() - o2.getSeq();
 			}
 		};
+
+	//endregion
+
 
 }

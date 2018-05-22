@@ -23,7 +23,7 @@ import java.util.List;
 @ToString
 public class DeptLevelDto extends SysDept{
 	//包含自己
-	private List<DeptLevelDto> deptLevelDtos = Lists.newArrayList();
+	private List<DeptLevelDto> deptList = Lists.newArrayList();
 
 	public  static DeptLevelDto adapt(SysDept dept){
 		DeptLevelDto levelDto = new DeptLevelDto();

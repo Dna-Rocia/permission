@@ -49,16 +49,19 @@ public class HttpInterceptor extends HandlerInterceptorAdapter{
 	}
 
 	/**
-	 * 处理后的拦截，正常的请求以及请求发生异常人正常的进行拦截
+	 * 处理后的拦截，正常的请求以及请求发生异常任正常的进行拦截
 	 */
 	@Override
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-		String uri = request.getRequestURI().toString();
-		Map map = request.getParameterMap();
-		long startTime = (Long) request.getAttribute(START_TIME);
-		long endTime = System.currentTimeMillis();
-		log.info("request completion.  uri:{},params:{},costTime:{}",uri, JsonMapper.obj2String(map),endTime-startTime);
-		removeThreadLocalInfo();
+		try{
+			String uri = request.getRequestURI().toString();
+			Map map = request.getParameterMap();
+			long startTime = (Long) request.getAttribute(START_TIME);
+			long endTime = System.currentTimeMillis();
+			log.info("request completion.  uri:{},params:{},costTime:{}",uri, JsonMapper.obj2String(map),endTime-startTime);
+		}finally {
+			removeThreadLocalInfo();
+		}
 	}
 
 
