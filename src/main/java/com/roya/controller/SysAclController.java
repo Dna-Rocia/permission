@@ -2,12 +2,10 @@ package com.roya.controller;
 
 import com.roya.beans.PageQuery;
 import com.roya.common.JsonData;
-import com.roya.param.AclModuleParam;
 import com.roya.param.AclParam;
 import com.roya.service.SysAclService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
