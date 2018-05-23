@@ -403,6 +403,12 @@ $(function () {
     });
 
 
+    /**
+     * save、update 提交路径整合
+     * @param isCreate  true : 新增   false:编辑
+     * @param successCallback  请求成功之后回调..
+     * @param failCallback  请求失败之后回调..
+     */
     function updateAcl(isCreate, successCallback, failCallback) {
         $.ajax({
             url: isCreate ? "/sys/acl/save.json" : "/sys/acl/update.json",
