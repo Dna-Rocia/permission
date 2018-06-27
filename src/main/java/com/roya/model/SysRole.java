@@ -1,8 +1,14 @@
 package com.roya.model;
 
-import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
-public class SysRole {
+
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class SysRole extends BaseModel{
     private Integer id;
 
     private String name;
@@ -13,11 +19,6 @@ public class SysRole {
 
     private String remark;
 
-    private String operator;
-
-    private Date operateTime;
-
-    private String operateIp;
 
     public Integer getId() {
         return id;
@@ -59,27 +60,4 @@ public class SysRole {
         this.remark = remark == null ? null : remark.trim();
     }
 
-    public String getOperator() {
-        return operator;
-    }
-
-    public void setOperator(String operator) {
-        this.operator = operator == null ? null : operator.trim();
-    }
-
-    public Date getOperateTime() {
-        return operateTime;
-    }
-
-    public void setOperateTime(Date operateTime) {
-        this.operateTime = operateTime;
-    }
-
-    public String getOperateIp() {
-        return operateIp;
-    }
-
-    public void setOperateIp(String operateIp) {
-        this.operateIp = operateIp == null ? null : operateIp.trim();
-    }
 }

@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.roya.exception.ParamException;
 import org.apache.commons.collections.MapUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -82,5 +83,11 @@ public class BeanValidator {
 		}
 	}
 
+
+	public static void checkFileNull(MultipartFile file) throws ParamException{
+		if (null == file && file.isEmpty()) {
+			throw  new ParamException();
+		}
+	}
 
 }

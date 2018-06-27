@@ -18,8 +18,9 @@
     </li>
 {{/deptList}}
 </ol>
-
 </script>
+
+
 <%--用户模板 --%>
 <script id="userListTemplate" type="x-tmpl-mustache">
     {{#userList}}
@@ -45,7 +46,7 @@
 </script>
 
 
-
+<%--权限模块的模板--%>
 <script id="aclModuleListTemplate" type="x-tmpl-mustache">
 <ol class="dd-list ">
     {{#aclModuleList}}
@@ -71,6 +72,7 @@
 </ol>
 </script>
 
+<%--权限列表的模板--%>
 <script id="aclListTemplate" type="x-tmpl-mustache">
 {{#aclList}}
 <tr role="row" class="acl-name odd" data-id="{{id}}"><!--even -->
@@ -92,6 +94,49 @@
     </td>
 </tr>
 {{/aclList}}
+</script>
+
+
+<%--角色列表的模板--%>
+<script id="roleListTemplate" type="x-tmpl-mustache">
+<ol class="dd-list ">
+    {{#roleList}}
+        <li class="dd-item dd2-item role-name" id="role_{{id}}" href="javascript:void(0)" data-id="{{id}}">
+            <div class="dd2-content" style="cursor:pointer;">
+            {{name}}
+            <span style="float:right;">
+                <a class="green role-edit" href="#" data-id="{{id}}" >
+                    <i class="ace-icon fa fa-pencil bigger-100"></i>
+                </a>
+                &nbsp;
+                <a class="red role-delete" href="#" data-id="{{id}}" data-name="{{name}}">
+                    <i class="ace-icon fa fa-trash-o bigger-100"></i>
+                </a>
+            </span>
+            </div>
+        </li>
+    {{/roleList}}
+</ol>
+</script>
+
+
+
+
+
+<%----%>
+<script id="selectedUsersTemplate" type="x-tmpl-mustache">
+{{#userList}}
+    <option value="{{id}}" selected="selected">{{username}}</option>
+{{/userList}}
+</script>
+
+
+
+<%----%>
+<script id="unSelectedUsersTemplate" type="x-tmpl-mustache">
+{{#userList}}
+    <option value="{{id}}">{{username}}</option>
+{{/userList}}
 </script>
 
 

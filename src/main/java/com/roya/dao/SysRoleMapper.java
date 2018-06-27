@@ -1,6 +1,9 @@
 package com.roya.dao;
 
 import com.roya.model.SysRole;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface SysRoleMapper {
     int deleteByPrimaryKey(Integer id);
@@ -14,4 +17,9 @@ public interface SysRoleMapper {
     int updateByPrimaryKeySelective(SysRole record);
 
     int updateByPrimaryKey(SysRole record);
+
+	List<SysRole> list();
+
+	int countByName(@Param("name") String name ,@Param("id") Integer id);
+
 }
