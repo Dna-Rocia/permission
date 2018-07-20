@@ -5,8 +5,10 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.roya.dao.SysAclModuleMapper;
 import com.roya.dao.SysDeptMapper;
+import com.roya.dto.AclDto;
 import com.roya.dto.AclModuleLevelDto;
 import com.roya.dto.DeptLevelDto;
+import com.roya.model.SysAcl;
 import com.roya.model.SysAclModule;
 import com.roya.model.SysDept;
 import com.roya.utils.LevelUtil;
@@ -14,9 +16,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by idea
@@ -33,6 +34,53 @@ public class SysTreeService {
 	private SysDeptMapper deptMapper;
 	@Resource
 	private SysAclModuleMapper aclModuleMapper;
+	@Resource
+	private SysCoreService sysCoreService;
+
+
+	//region 角色树
+	public List<AclModuleLevelDto> roleTree(int roleId){
+		//当前用户已分配的权限点
+		List<SysAcl> userAclList = sysCoreService.getCurrentUserAclList();
+		//当前角色分配的权限点
+		List<SysAcl> roleAclList = sysCoreService.getRoleAclList(roleId);
+
+		Set<Integer> userAclIdSet = userAclList.stream().map(sysAcl -> sysAcl.getId()).collect(Collectors.toSet());
+		Set<Integer> roleAclIdSet = roleAclList.stream().map(sysAcl -> sysAcl.getId()).collect(Collectors.toSet());
+
+		//合成并集
+		Set<SysAcl> aclSet = new HashSet<>(roleAclList);
+		aclSet.addAll(userAclList);
+
+		List<AclDto> aclDtoList = Lists.newArrayList();
+		for (SysAcl acl : aclDtoList) {
+			AclDto dto = AclDto.adapt(acl);
+			if (userAclIdSet.contains(acl.getId())){
+				dto.setHasAcl(true);
+			}
+			if (roleAclIdSet.contains(acl.getId())){
+				dto.setChecked(true);
+			}
+			aclDtoList.add(dto);
+		}
+		return aclList2Tree(aclDtoList);
+	}
+
+
+
+	public List<AclModuleLevelDto>  aclList2Tree(List<AclDto> aclDtoList){
+		if (CollectionUtils.isEmpty(aclDtoList)){
+			return 	Lists.newArrayList();
+		}
+		List<AclModuleLevelDto> aclModuleLevelList = aclModuleTree();
+
+	}
+
+
+
+
+
+	//endregion
 
 
 

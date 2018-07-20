@@ -25,6 +25,8 @@ public class AclModuleLevelDto extends SysAclModule {
 	//包含自己
 	private List<AclModuleLevelDto> aclModuleList = Lists.newArrayList();
 
+	private List<AclDto> aclList = Lists.newArrayList();
+
 	public  static AclModuleLevelDto adapt(SysAclModule aclModule){
 		AclModuleLevelDto levelDto = new AclModuleLevelDto();
 		//将权限模块对象拷贝成所使用的dto
