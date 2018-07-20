@@ -9,7 +9,7 @@
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 <!-- bootstrap & fontawesome -->
 <link rel="stylesheet" href="/assets/css/bootstrap.min.css"/>
-<link rel="stylesheet" href="/font-awesome-4.7.0/css/font-awesome.min.css"/>
+<link rel="stylesheet" href="/assets1/font-awesome-4.7.0/css/font-awesome.min.css"/>
 <!-- page specific plugin styles -->
 <!-- text fonts -->
 <link rel="stylesheet" href="/assets/css/google-fonts.css"/>
@@ -31,16 +31,16 @@
 <script src="/assets/js/ace-extra.min.js"></script>
 <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!--[if lte IE 8]>
-<script src="/js/html5shiv.min.js"></script>
-<script src="/js/respond.min.js"></script>
+<script src="/assets/js/html5shiv.min.js"></script>
+<script src="/assets/js/respond.min.js"></script>
 <![endif]-->
 
-<script src="/js/jquery-1.9.1.min.js"></script>
+<script src="/assets/js/jquery-1.9.1.min.js"></script>
 <script src="/assets/js/jquery-ui.min.js"></script>
 <script src="/assets/js/jquery.gritter.min.js"></script>
 <script src="/assets/js/chosen.jquery.min.js"></script>
 <script src="http://cdn.bootcss.com/mustache.js/2.2.1/mustache.js"></script>
-<script src="/bootstrap3.3.5/js/bootstrap.min.js"></script>
+<script src="/assets1/bootstrap3.3.5/js/bootstrap.min.js"></script>
 
 <script type="text/javascript">
     // 展示提示信息

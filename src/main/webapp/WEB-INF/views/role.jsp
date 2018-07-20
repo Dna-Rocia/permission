@@ -5,9 +5,9 @@
     <jsp:include page="/common/backend_common.jsp" />
     <jsp:include page="/common/template.jsp"/>
     <%--树的层级，勾选，样式--%>
-    <link rel="stylesheet" href="/ztree/zTreeStyle.css" type="text/css">
+    <link rel="stylesheet" href="/assets1/ztree/zTreeStyle.css" type="text/css">
     <link rel="stylesheet" href="/assets/css/bootstrap-duallistbox.min.css" type="text/css">
-    <script type="text/javascript" src="/ztree/jquery.ztree.all.min.js"></script>
+    <script type="text/javascript" src="/assets1/ztree/jquery.ztree.all.min.js"></script>
     <script type="text/javascript" src="/assets/js/jquery.bootstrap-duallistbox.min.js"></script>
     <style type="text/css">
         .bootstrap-duallistbox-container .moveall, .bootstrap-duallistbox-container .removeall {
@@ -104,6 +104,6 @@
         </table>
     </form>
 </div>
-    <script src="../../js/role.js"/>
+        <script src="../../common/js/role.js"></script>
 </body>
 </html>

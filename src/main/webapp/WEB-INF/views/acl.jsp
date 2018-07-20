@@ -169,7 +169,6 @@
         </table>
     </form>
 </div>
-
-<script src="../../js/acl.js"></script>
+<script src="../../common/js/acl.js"></script>
 </body>
 </html>

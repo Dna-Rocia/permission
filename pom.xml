@@ -90,7 +90,8 @@
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
-            <artifactId>c</artifactId>
+            <artifactId>commons-email</artifactId>
+            <version>1.5</version>
         </dependency>
 
 

@@ -146,6 +146,6 @@
         </table>
     </form>
 </div>
-<script src="../../js/dept.js"></script>
+<script src="../../common/js/dept.js"></script>
 </body>
 </html>
