@@ -13,47 +13,47 @@ $(function () {
 
     function loadRoleList() {
         $.ajax({
-           url : "/sys/role/list.json",
-           success:function (result) {
-               if (result.ret){
-                   var render = Mustache.render(roleListTemplate,{roleList:result.data});
-                   $("#roleList").html(render);
-                   //绑定点击事件
-                   bindRoleClick();
+            url: "/sys/role/list.json",
+            success: function (result) {
+                if (result.ret) {
+                    var render = Mustache.render(roleListTemplate, {roleList: result.data});
+                    $("#roleList").html(render);
+                    //绑定点击事件
+                    bindRoleClick();
 
-                    $.each(result.data, function (i,role) {
+                    $.each(result.data, function (i, role) {
                         roleMap[role.id] = role;  //全局的角色
                     });
-               }else {
-                   showMessage("加载角色列表",result.msg,false);
-               }
-           }
+                } else {
+                    showMessage("加载角色列表", result.msg, false);
+                }
+            }
         });
     }
 
 
-    function  bindRoleClick() {
+    function bindRoleClick() {
         $(".role-edit").click(function (e) {
             e.preventDefault();//拦截默认操作
             e.stopPropagation();//拦截冒泡事件
             var roleId = $(this).attr("data-id");
 
             $("#dialog-role-form").dialog({
-                model:true,
-                title:"修改角色",
-                open:function(event,ui){
-                    $(".ui-dialog-titlebar-close",$(this).parent()).hide();
+                model: true,
+                title: "修改角色",
+                open: function (event, ui) {
+                    $(".ui-dialog-titlebar-close", $(this).parent()).hide();
                     $("#roleForm")[0].reset();
                     var targetRole = roleMap[roleId];
-                    if (targetRole){
+                    if (targetRole) {
                         $("#roleId").val(roleId);
                         $("#roleName").val(targetRole.name);
                         $("#roleStatus").val(targetRole.status);
                         $("#roleRemark").val(targetRole.remark);
                     }
                 },
-                buttons:{
-                    "修改": function(e) {
+                buttons: {
+                    "修改": function (e) {
                         e.preventDefault();
                         updateRole(false, function (data) {
                             $("#dialog-role-form").dialog("close");
@@ -78,13 +78,26 @@ $(function () {
 
     }
 
-    function handleRoleSelected(roleId){
-        if (lastRoleId != -1){
-            var lastRole = $("#role_"+lastRoleId+" .dd2-content:first");
-            
+    function handleRoleSelected(roleId) {
+        if (lastRoleId != -1) {
+            var lastRole = $("#role_" + lastRoleId + " .dd2-content:first");
+            lastRole.removeClass("btn-yellow");
+            lastRole.removeClass("no-hover");
         }
+        var currentRole = $("#role_" + roleId + " .dd2-content:first");
+        currentRole.addClass("btn-yellow");
+        currentRole.addClass("no-hover");
+        lastRoleId = roleId;
+        $('#roleTab a:first').trigger('click');
+        if (selectFirstTab){
+            loadRoleAcl();
+        }
+    }
 
-
+    /**
+     * 加载第一个tab (角色与权限)
+     */
+    function loadRoleAcl(){
 
     }
 
@@ -92,14 +105,14 @@ $(function () {
 
     $(".role-add").click(function () {
         $("#dialog-role-form").dialog({
-            model:true,
-            title:"新增角色",
-            open:function(event,ui){
-                $(".ui-dialog-titlebar-close",$(this).parent()).hide();
+            model: true,
+            title: "新增角色",
+            open: function (event, ui) {
+                $(".ui-dialog-titlebar-close", $(this).parent()).hide();
                 $("#roleForm")[0].reset();
             },
-            buttons:{
-                "添加": function(e) {
+            buttons: {
+                "添加": function (e) {
                     e.preventDefault();
                     updateRole(true, function (data) {
                         $("#dialog-role-form").dialog("close");
@@ -115,14 +128,12 @@ $(function () {
     });
 
 
-
-
     function updateRole(isCreate, successCallback, failCallback) {
         $.ajax({
             url: isCreate ? "/sys/role/save.json" : "/sys/role/update.json",
             data: $("#roleForm").serializeArray(), //serializeArray自动组装成我们所需要的格式
             type: 'POST',
-            success: function(result) {
+            success: function (result) {
                 if (result.ret) {
                     loadRoleList();
                     if (successCallback) {
@@ -136,10 +147,6 @@ $(function () {
             }
         });
     }
-
-
-
-
 
 
 });
