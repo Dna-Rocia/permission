@@ -29,4 +29,6 @@ public interface SysUserMapper {
 
 	List<SysUser> getPageByDeptId(@Param("deptId") int deptId, @Param("page") PageQuery page);
 
+	List<SysUser> getByIdList(@Param("idList") List<Integer> idList);
+
 }

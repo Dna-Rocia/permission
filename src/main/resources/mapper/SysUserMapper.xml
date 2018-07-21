@@ -218,5 +218,16 @@
         Limit #{page.offset},#{page.pageSize}
     </select>
 
+    <select id="getByIdList" resultType="com.roya.model.SysUser">
+        select
+        <include refid="Base_Column_List" />
+        from
+        sys_user
+        where id in
+        <foreach collection="idList" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
 
 </mapper>

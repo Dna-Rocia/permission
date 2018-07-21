@@ -4,6 +4,7 @@ import com.roya.common.JsonData;
 import com.roya.param.RoleParam;
 import com.roya.service.SysRoleAclService;
 import com.roya.service.SysRoleService;
+import com.roya.service.SysRoleUserService;
 import com.roya.service.SysTreeService;
 import com.roya.utils.StringUtil;
 import org.springframework.stereotype.Controller;
@@ -33,6 +34,8 @@ public class SysRoleController {
 	private SysTreeService sysTreeService;
 	@Resource
 	private SysRoleAclService sysRoleAclService;
+	@Resource
+	private SysRoleUserService sysRoleUserService;
 
 	@RequestMapping("/role.page")
 	public ModelAndView page(){
@@ -74,4 +77,12 @@ public class SysRoleController {
 		sysRoleAclService.changeRoleAcls(roleId,aclIdList);
 		return JsonData.success();
 	}
+
+	@RequestMapping("/users.json")
+	@ResponseBody
+	public  JsonData  users(@RequestParam("roleId") int roleId){
+		return JsonData.success(sysTreeService.roleTree(roleId));
+	}
+
+
 }

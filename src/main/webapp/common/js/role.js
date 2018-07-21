@@ -311,7 +311,7 @@ $(function () {
     $(".saveRoleAcl").click(function (e) {
         e.preventDefault();
         if (lastRoleId == -1){
-            showMessage("保存角色与权限点的关系","请现在左侧选择需要操作的角色",false);
+            showMessage("保存角色与权限点的关系","请先在左侧选择需要操作的角色",false);
             return;
         }
         $.ajax({
@@ -332,4 +332,28 @@ $(function () {
     });
 
 
+    /**
+     *  tab的点击事件
+     */
+    $("#roleTab a[data-toggle='tab']").on("show.bs.tab",function (e) {
+       if (lastRoleId == -1){
+           showMessage("加载角色关系","请先在左侧选择需要操作的角色",false);
+           return;
+       }
+       if (e.target.getAttribute("href") == '#roleAclTab'){
+           selectFirstTab = true;
+           loadRoleAcl(lastRoleId);
+       }else {
+           selectFirstTab = false;
+           loadRoleUser(lastRoleId);
+       }
+
+    });
+    
+     function loadRoleUser(selectedRoleId) {
+         
+     }
+    
+    
+    
 });
