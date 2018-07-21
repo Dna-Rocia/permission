@@ -18,11 +18,40 @@
     from sys_role_acl
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+
+
+    <select id="getAclIdListByRoleIdList" parameterType="map" resultType="java.lang.Integer">
+      select acl_id
+      from sys_role_acl
+      where role_id in
+      <foreach collection="roleIdList" item="roleId" open="(" close=")" separator=",">
+        #{roleId}
+      </foreach>
+    </select>
+
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from sys_role_acl
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.roya.model.SysRoleAcl" >
+
+
+    <delete id="deleteByRoleId">
+        delete from sys_role_acl
+        where role_id = #{roleId}
+    </delete>
+
+
+    <insert id="batchInsert">
+    insert into sys_role_acl
+        (role_id, acl_id, operator, operate_time, operate_ip )
+    values
+    <foreach collection="roleAclList" item="roleAcl" separator="," >
+        ( #{roleAcl.roleId}, #{roleAcl.aclId},#{roleAcl.operator}, #{roleAcl.operateTime}, #{roleAcl.operateIp})
+    </foreach>
+    </insert>
+
+    <insert id="insert" parameterType="com.roya.model.SysRoleAcl" >
     insert into sys_role_acl (id, role_id, acl_id, 
       operator, operate_time, operate_ip
       )
@@ -73,7 +102,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.roya.model.SysRoleAcl" >
+    <update id="updateByPrimaryKeySelective" parameterType="com.roya.model.SysRoleAcl" >
     update sys_role_acl
     <set >
       <if test="roleId != null" >

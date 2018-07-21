@@ -3,6 +3,7 @@ package com.roya.service;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
+import com.roya.dao.SysAclMapper;
 import com.roya.dao.SysAclModuleMapper;
 import com.roya.dao.SysDeptMapper;
 import com.roya.dto.AclDto;
@@ -13,6 +14,7 @@ import com.roya.model.SysAclModule;
 import com.roya.model.SysDept;
 import com.roya.utils.LevelUtil;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -36,24 +38,26 @@ public class SysTreeService {
 	private SysAclModuleMapper aclModuleMapper;
 	@Resource
 	private SysCoreService sysCoreService;
+	@Autowired
+	private SysAclMapper sysAclMapper;
 
-
-	//region 角色树
+	//region 角色对应的权限树
 	public List<AclModuleLevelDto> roleTree(int roleId){
 		//当前用户已分配的权限点
 		List<SysAcl> userAclList = sysCoreService.getCurrentUserAclList();
 		//当前角色分配的权限点
 		List<SysAcl> roleAclList = sysCoreService.getRoleAclList(roleId);
+		//当前系统所有的权限点
+		List<AclDto> aclDtoList = Lists.newArrayList();
 
 		Set<Integer> userAclIdSet = userAclList.stream().map(sysAcl -> sysAcl.getId()).collect(Collectors.toSet());
 		Set<Integer> roleAclIdSet = roleAclList.stream().map(sysAcl -> sysAcl.getId()).collect(Collectors.toSet());
-
 		//合成并集
-		Set<SysAcl> aclSet = new HashSet<>(roleAclList);
-		aclSet.addAll(userAclList);
-
-		List<AclDto> aclDtoList = Lists.newArrayList();
-		for (SysAcl acl : aclDtoList) {
+	//	Set<SysAcl> aclSet = new HashSet<>(allAclList);
+//		aclSet.addAll(userAclList);
+		//取出所有的权限点
+		List<SysAcl> allAclList = sysAclMapper.getAll();
+		for (SysAcl acl : allAclList) {
 			AclDto dto = AclDto.adapt(acl);
 			if (userAclIdSet.contains(acl.getId())){
 				dto.setHasAcl(true);
@@ -73,9 +77,39 @@ public class SysTreeService {
 			return 	Lists.newArrayList();
 		}
 		List<AclModuleLevelDto> aclModuleLevelList = aclModuleTree();
-
+		Multimap<Integer,AclDto> moduleIdAclMap = ArrayListMultimap.create();
+		for (AclDto acl : aclDtoList){
+			if(acl.getStatus()  == 1 ){ //状态为正常
+				moduleIdAclMap.put(acl.getAclModuleId(),acl);
+			}
+		}
+		bindAclsWithOrder(aclModuleLevelList,moduleIdAclMap);
+		return aclModuleLevelList;
 	}
 
+	/**
+	 * 递归将权限点绑定到模块树上面
+	 */
+	private void bindAclsWithOrder(List<AclModuleLevelDto> aclModuleLevelList,Multimap<Integer,AclDto> moduleIdAclMap){
+		if (CollectionUtils.isEmpty(aclModuleLevelList)){
+			return ;
+		}
+		for (AclModuleLevelDto dto : aclModuleLevelList){
+			List<AclDto> aclDtoList =  (List<AclDto>)moduleIdAclMap.get(dto.getId());
+			if(CollectionUtils.isNotEmpty(aclDtoList)){
+				Collections.sort(aclDtoList,aclDtoComparator);
+				dto.setAclList(aclDtoList);
+			}
+			bindAclsWithOrder(dto.getAclModuleList(),moduleIdAclMap);
+		}
+	}
+
+	//权限树的层级比较器
+	public 	Comparator<AclDto> aclDtoComparator = new Comparator<AclDto>() {
+		public int compare(AclDto o1, AclDto o2) {
+			return o1.getSeq() - o2.getSeq();
+		}
+	};
 
 
 
