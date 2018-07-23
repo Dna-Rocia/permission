@@ -127,17 +127,19 @@ $(function () {
         /**
          * 删除部门
          **/
-        $(".dept-delete").click(function (e) { //这个e  主要是避免它的默认事件的执行
+
+        $(".dept-delete").click(function (e) {
             e.preventDefault();
-            e.stopPropagation(); //不允许它执行冒泡
+            e.stopPropagation();
             var deptId = $(this).attr("data-id");
             var deptName = $(this).attr("data-name");
             if (confirm("确定要删除部门[" + deptName + "]吗?")) {
-                /* $.ajax({
+                $.ajax({
                      url: "/sys/dept/delete.json",
                      data: {
                          id: deptId
                      },
+                    type:'post',
                      success: function (result) {
                          if (result.ret) {
                              showMessage("删除部门[" + deptName + "]", "操作成功", true);
@@ -146,8 +148,7 @@ $(function () {
                              showMessage("删除部门[" + deptName + "]", result.msg, false);
                          }
                      }
-                 });*/
-                console.log("delete dept :"+deptName);
+                 });
             }
         });
 

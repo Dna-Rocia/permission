@@ -26,4 +26,6 @@ public interface SysDeptMapper {
 
 	int countByNameAndParentId(@Param("parentId")Integer parentId,@Param("name") String name,@Param("id")Integer id);
 
+	//查看是否有部门的parentId是当前部门
+	int countByParentId(@Param("deptId") int deptId);
 }

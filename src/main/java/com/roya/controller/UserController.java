@@ -64,7 +64,7 @@ public class UserController {
 			if (StringUtils.isNotBlank(ret)) {
 				response.sendRedirect(ret);
 			} else {
-				response.sendRedirect("/admin/index.page"); //TODO
+				response.sendRedirect("/admin/index.page");
 				return;
 			}
 		}
