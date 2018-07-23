@@ -218,7 +218,7 @@
         Limit #{page.offset},#{page.pageSize}
     </select>
 
-    <select id="getByIdList" resultType="com.roya.model.SysUser">
+    <select id="getByIdList" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
         from
@@ -227,6 +227,14 @@
         <foreach collection="idList" item="id" open="(" close=")" separator=",">
             #{id}
         </foreach>
+    </select>
+
+
+    <select id="getAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from
+        sys_user
     </select>
 
 

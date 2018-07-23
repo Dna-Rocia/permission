@@ -194,7 +194,15 @@
         from
             sys_acl_module
 </select>
-    
+
+    <select id="countByParentId" resultType="java.lang.Integer">
+        select
+            count(1)
+        from
+            sys_acl_module
+        where
+            parent_id = #{aclModuleId}
+    </select>
 
 
 </mapper>

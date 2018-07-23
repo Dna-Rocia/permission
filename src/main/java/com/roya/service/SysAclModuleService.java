@@ -2,9 +2,11 @@ package com.roya.service;
 
 import com.google.common.base.Preconditions;
 import com.roya.common.RequestHolder;
+import com.roya.dao.SysAclMapper;
 import com.roya.dao.SysAclModuleMapper;
 import com.roya.exception.ParamException;
 import com.roya.model.SysAclModule;
+import com.roya.model.SysDept;
 import com.roya.param.AclModuleParam;
 import com.roya.utils.BeanValidator;
 import com.roya.utils.IpUtil;
@@ -30,6 +32,8 @@ public class SysAclModuleService {
 
 	@Resource
 	private SysAclModuleMapper aclModuleMapper;
+	@Resource
+	private SysAclMapper aclMapper;
 
 	/**
 	 * 权限模块新增
@@ -124,7 +128,19 @@ public class SysAclModuleService {
 	}
 
 
+	public void delete(int aclModuleId){
+		//先判断一下部门树是否存在
+		SysAclModule  aclModule = aclModuleMapper.selectByPrimaryKey(aclModuleId);
+		Preconditions.checkNotNull(aclModule,"待删除的权限模块不存在，无法删除");
 
+		if (aclModuleMapper.countByParentId(aclModule.getId()) > 0){
+			throw new ParamException("当前权限模块下有子模块，无法删除");
+		}
+		if (aclMapper.countByAclModuleId(aclModule.getId()) > 0){
+			throw new ParamException("当前权限模块下存在用户，无法删除");
+		}
+		aclModuleMapper.deleteByPrimaryKey(aclModuleId);
+	}
 
 
 

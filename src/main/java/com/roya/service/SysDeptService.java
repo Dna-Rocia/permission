@@ -3,6 +3,7 @@ package com.roya.service;
 import com.google.common.base.Preconditions;
 import com.roya.common.RequestHolder;
 import com.roya.dao.SysDeptMapper;
+import com.roya.dao.SysUserMapper;
 import com.roya.exception.ParamException;
 import com.roya.model.SysDept;
 import com.roya.param.DeptParam;
@@ -30,6 +31,8 @@ import java.util.List;
 public class SysDeptService {
 	@Resource
 	private SysDeptMapper sysDeptMapper;
+	@Resource
+	private SysUserMapper sysUserMapper;
 
 	public void save(DeptParam param){
 		BeanValidator.check(param);
@@ -123,6 +126,19 @@ public class SysDeptService {
 			}
 		}
 		sysDeptMapper.updateByPrimaryKey(after);
+	}
+
+	public void delete(int deptId){
+		//先判断一下部门树是否存在
+		SysDept dept = sysDeptMapper.selectByPrimaryKey(deptId);
+		Preconditions.checkNotNull(dept,"待删除的部门不存在，无法删除");
+		if (sysDeptMapper.countByParentId(dept.getId()) > 0){
+			throw new ParamException("当前部门下有子部门，无法删除");
+		}
+		if (sysUserMapper.countByDeptId(dept.getId()) > 0){
+			throw new ParamException("当前部门下存在用户，无法删除");
+		}
+		sysDeptMapper.deleteByPrimaryKey(deptId);
 	}
 
 

@@ -34,7 +34,7 @@ public class SysRoleAclService {
 		if (originAclIdList.size() == aclIdList.size()){
 			Set<Integer> originAclIdSet = Sets.newHashSet(originAclIdList);
 			Set<Integer> aclIdSet = Sets.newHashSet(aclIdList);
-			originAclIdSet.remove(aclIdSet);
+			originAclIdSet.removeAll(aclIdSet);
 			if (CollectionUtils.isEmpty(originAclIdSet)){
 				return;
 			}

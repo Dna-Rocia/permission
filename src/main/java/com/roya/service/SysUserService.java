@@ -122,6 +122,9 @@ public class SysUserService {
 	}
 
 
+	public List<SysUser> getAll(){
+		return 	userMapper.getAll();
+	}
 
 
 }

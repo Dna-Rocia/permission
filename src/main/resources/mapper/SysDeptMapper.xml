@@ -183,6 +183,14 @@
     </select>
 
 
+    <select id="countByParentId" resultType="java.lang.Integer">
+        SELECT
+            COUNT(1)
+        FROM
+           sys_dept
+        WHERE
+            parent_id = #{deptId}
+    </select>
 
 
 </mapper>
