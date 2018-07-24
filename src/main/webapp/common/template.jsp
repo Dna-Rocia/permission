@@ -123,7 +123,7 @@
 
 
 
-<%----%>
+<%--已选用户列表模板--%>
 <script id="selectedUsersTemplate" type="x-tmpl-mustache">
 {{#userList}}
     <option value="{{id}}" selected="selected">{{username}}</option>
@@ -132,7 +132,7 @@
 
 
 
-<%----%>
+<%--待选用户列表模板--%>
 <script id="unSelectedUsersTemplate" type="x-tmpl-mustache">
 {{#userList}}
     <option value="{{id}}">{{username}}</option>
