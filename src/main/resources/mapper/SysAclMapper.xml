@@ -83,6 +83,16 @@
     </select>
 
 
+    <select id="getByUrl" resultType="com.roya.model.SysAcl">
+        select
+        <include refid="Base_Column_List" />
+        from
+        sys_acl
+        WHERE
+        url = #{url}
+    </select>
+   <!-- /*当url是动态的时候，可使用正则表达式：url != null and  url != '' and  #{url} regexp url*/-->
+
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from sys_acl
     where id = #{id,jdbcType=INTEGER}
