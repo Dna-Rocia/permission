@@ -1,10 +1,13 @@
 package com.roya.controller;
 
+import com.google.common.collect.Maps;
 import com.roya.beans.PageQuery;
 import com.roya.beans.PageResult;
 import com.roya.common.JsonData;
 import com.roya.model.SysUser;
 import com.roya.param.UserParam;
+import com.roya.service.SysRoleService;
+import com.roya.service.SysTreeService;
 import com.roya.service.SysUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import java.util.Map;
 
 /**
  * Created by idea
@@ -29,6 +33,10 @@ public class SysUserController {
 
 	@Resource
 	private SysUserService userService;
+	@Resource
+	private SysTreeService sysTreeService;
+	@Resource
+	private SysRoleService sysRoleService;
 
 	@RequestMapping("/save.json")
 	@ResponseBody
@@ -55,7 +63,14 @@ public class SysUserController {
 	}
 
 
-
+	@RequestMapping("/acls.json")
+	@ResponseBody
+	public JsonData acls(@RequestParam("userId") int userId) {
+		Map<String,Object> map = Maps.newHashMap();
+		map.put("acls",sysTreeService.userAclTree(userId));
+		map.put("roles",sysRoleService.getRoleListByUserId(userId));
+		return JsonData.success(map);
+	}
 
 
 

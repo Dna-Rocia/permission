@@ -30,6 +30,13 @@
     </select>
 
 
+    <select id="getRoleIdListByAclId" resultType="java.lang.Integer">
+      select role_id
+      from sys_role_acl
+      where acl_id  = #{aclId}
+    </select>
+
+
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from sys_role_acl
     where id = #{id,jdbcType=INTEGER}

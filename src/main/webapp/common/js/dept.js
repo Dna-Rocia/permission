@@ -284,6 +284,26 @@ $(function () {
 
     //编辑用户
     function bindUserClick() {
+        $(".user-acl").click(function (e) {
+            e.preventDefault(); //拦截默认的点击事件，点击之后的操作全部是我们自己处理
+            e.stopPropagation(); //不允许它执行冒泡
+            var userId = $(this).attr("data-id");
+            $.ajax({
+                url: "/sys/user/acls.json",
+                data: {
+                    userId:userId
+                },
+                type:'post',
+                success: function(result) {
+                    if (result.ret) {
+                        console.log(result);
+                    } else {
+                        showMessage("获取用户权限数据", result.msg, false);
+                    }
+                }
+            });
+        });
+
         $(".user-edit").click(function (e) {
             e.preventDefault(); //拦截默认的点击事件，点击之后的操作全部是我们自己处理
             e.stopPropagation(); //不允许它执行冒泡
@@ -373,7 +393,7 @@ $(function () {
                     }
                 }
             }
-        })
+        });
     }
 
 
