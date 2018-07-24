@@ -332,6 +332,27 @@ $(function () {
 
     //绑定权限点的点击操作
     function bindAclClick() {
+        $(".acl-role").click(function (e) {
+            e.preventDefault(); //拦截默认的点击事件，点击之后的操作全部是我们自己处理
+            e.stopPropagation(); //不允许它执行冒泡
+            var aclId = $(this).attr("data-id");
+            $.ajax({
+                url: "/sys/acl/acls.json",
+                data: {
+                    aclId:aclId
+                },
+                type:'post',
+                success: function(result) {
+                    if (result.ret) {
+                        console.log(result);
+                    } else {
+                        showMessage("获取权限点分配的用户和角色", result.msg, false);
+                    }
+                }
+            });
+        });
+
+
         $(".acl-edit").click(function (e) {
             e.preventDefault();
             e.stopPropagation();
