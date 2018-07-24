@@ -16,6 +16,7 @@
         </property>
     </bean>
 
+    <import resource="redis.xml"/>
 
     <!--数据源 连接数据库-->
     <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">

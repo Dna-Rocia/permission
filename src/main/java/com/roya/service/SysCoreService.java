@@ -1,13 +1,16 @@
 package com.roya.service;
 
 import com.google.common.collect.Lists;
+import com.roya.beans.CacheKeyConstans;
 import com.roya.common.RequestHolder;
 import com.roya.dao.SysAclMapper;
 import com.roya.dao.SysRoleAclMapper;
 import com.roya.dao.SysRoleUserMapper;
 import com.roya.model.SysAcl;
-import com.roya.model.SysRoleAcl;
+import com.roya.utils.JsonMapper;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jackson.type.TypeReference;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -29,6 +32,8 @@ public class SysCoreService {
 	private SysRoleUserMapper sysRoleUserMapper;
 	@Resource
 	private SysRoleAclMapper sysRoleAclMapper;
+	@Resource
+	private SysCacheService sysCacheService;
 
 
 	public List<SysAcl> getCurrentUserAclList(){
@@ -78,7 +83,7 @@ public class SysCoreService {
 			return true;
 		}
 		//获取当前用户权限
-		List<SysAcl> userAclList = getCurrentUserAclList();
+		List<SysAcl> userAclList =getCurrentUserAclListFromCache();// getCurrentUserAclList();
 		Set<Integer>  userAclIdSet = userAclList.stream().map(sysAcl -> sysAcl.getId()).collect(Collectors.toSet());
 
 		boolean hasValidAcl = false;
@@ -99,5 +104,21 @@ public class SysCoreService {
 		}
 		//url 若没有权限访问的话，就返回false
 		return false;
+	}
+
+
+	public List<SysAcl> getCurrentUserAclListFromCache(){
+		int userId = RequestHolder.getCurrentUser().getId();
+		String cacheValue = sysCacheService.getFromCache(CacheKeyConstans.USER_ACLS,String.valueOf(userId));
+		if (StringUtils.isBlank(cacheValue)){
+			List<SysAcl> aclList = getCurrentUserAclList();
+			if (CollectionUtils.isNotEmpty(aclList)){
+				sysCacheService.saveCache(JsonMapper.obj2String(aclList),600,
+						CacheKeyConstans.USER_ACLS,String.valueOf(userId));
+			}
+			return aclList;
+		}
+		return JsonMapper.string2Object(cacheValue, new TypeReference<List<SysAcl>>() {
+		});
 	}
 }
