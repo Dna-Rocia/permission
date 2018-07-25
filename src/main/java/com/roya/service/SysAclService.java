@@ -30,7 +30,8 @@ import java.util.List;
 public class SysAclService {
 	@Resource
 	private SysAclMapper aclMapper;
-
+	@Resource
+	private SysLogService sysLogService;
 
 	public  void  save(AclParam  param){
 		BeanValidator.check(param);
@@ -49,6 +50,7 @@ public class SysAclService {
 		acl.setOperateTime(new Date());
 
 		aclMapper.insertSelective(acl);
+		sysLogService.saveAclLog(null,acl);
 
 	}
 
@@ -72,7 +74,7 @@ public class SysAclService {
 		after.setOperateTime(new Date());
 
 		aclMapper.updateByPrimaryKeySelective(after);
-
+		sysLogService.saveAclLog(before,after);
 	}
 
 	/**

@@ -34,6 +34,8 @@ public class SysAclModuleService {
 	private SysAclModuleMapper aclModuleMapper;
 	@Resource
 	private SysAclMapper aclMapper;
+	@Resource
+	private SysLogService sysLogService;
 
 	/**
 	 * 权限模块新增
@@ -54,7 +56,7 @@ public class SysAclModuleService {
 		aclModule.setOperateTime(new Date());
 		aclModule.setOperateIp(IpUtil.getRemoteIp(RequestHolder.getCurrentRequest()));
 		aclModuleMapper.insertSelective(aclModule);
-
+		sysLogService.saveAclModuleLog(null,aclModule);
 
 	}
 
@@ -81,6 +83,7 @@ public class SysAclModuleService {
 		after.setOperateTime(new Date());
 		after.setOperateIp(IpUtil.getRemoteIp(RequestHolder.getCurrentRequest()));
 		updateWithChild(before,after);
+		sysLogService.saveAclModuleLog(before,after);
 	}
 
 	/**

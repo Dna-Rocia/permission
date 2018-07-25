@@ -25,6 +25,8 @@ public class SysRoleAclService {
 
 	@Resource
 	private SysRoleAclMapper sysRoleAclMapper;
+	@Resource
+	private SysLogService sysLogService;
 
 	public void changeRoleAcls(Integer roleId,List<Integer> aclIdList){
 		//取出之前分配的权限
@@ -40,6 +42,7 @@ public class SysRoleAclService {
 			}
 		}
 		updateRoleAcls(roleId,aclIdList);
+		sysLogService.saveRoleAclLog(roleId,originAclIdList,aclIdList);
 	}
 
 

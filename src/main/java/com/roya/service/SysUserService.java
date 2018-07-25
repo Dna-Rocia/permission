@@ -28,7 +28,8 @@ public class SysUserService {
 
 	@Resource
 	private SysUserMapper userMapper;
-
+	@Resource
+	private SysLogService sysLogService;
 
 	public void insertUser(UserParam param){
 		BeanValidator.check(param);
@@ -56,7 +57,7 @@ public class SysUserService {
 		if (flag){
 			userMapper.insertSelective(sysUser);
 		}
-
+		sysLogService.saveUserLog(null,sysUser);
 	}
 
 	/**
@@ -98,6 +99,7 @@ public class SysUserService {
 		after.setOperateTime(new Date());
 
 		userMapper.updateByPrimaryKeySelective(after);
+		sysLogService.saveUserLog(before,after);
 	}
 
 

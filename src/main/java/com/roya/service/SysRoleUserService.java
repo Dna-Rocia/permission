@@ -30,7 +30,8 @@ public class SysRoleUserService {
 	private SysRoleUserMapper sysRoleUserMapper;
 	@Resource
 	private SysUserMapper sysUserMapper;
-
+	@Resource
+	private SysLogService sysLogService;
 
 	public List<SysUser> getListByRoleId(int roleId){
 		List<Integer> userIdList = sysRoleUserMapper.getUserIdListByRoleId(roleId);
@@ -55,6 +56,7 @@ public class SysRoleUserService {
 			}
 		}
 		updateRoleUsers(roleId,userIdList);
+		sysLogService.saveRoleUserLog(roleId,originUserIdList,userIdList);
 	}
 
 	@Transactional

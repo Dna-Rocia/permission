@@ -38,6 +38,8 @@ public class SysRoleService {
 	private SysRoleAclMapper sysRoleAclMapper;
 	@Resource
 	private SysUserMapper sysUserMapper;
+	@Resource
+	private SysLogService sysLogService;
 
 
 	public  void  save(RoleParam param){
@@ -51,6 +53,7 @@ public class SysRoleService {
 				.build();
 		OperateHandle.generateSetOperate(role);
 		sysRoleMapper.insertSelective(role);
+		sysLogService.saveRoleLog(null,role);
 	}
 
 
@@ -70,7 +73,7 @@ public class SysRoleService {
 		OperateHandle.generateSetOperate(after);
 
 		sysRoleMapper.updateByPrimaryKeySelective(after);
-
+		sysLogService.saveRoleLog(before,after);
 	}
 
 

@@ -140,4 +140,22 @@
 </script>
 
 
-
+<%--更新记录模板--%>
+<script id="logListTemplate" type="x-tmpl-mustache">
+{{#logList}}
+<tr role="row" class="config odd" data-id="{{id}}"><!--even -->
+    <td>{{operator}}</td>
+    <td>{{#showType}}{{/showType}}</td>
+    <td>{{#showDate}}{{/showDate}}</td>
+    <td><pre>{{#showOldValue}}{{/showOldValue}}</pre></td>
+    <td><pre>{{#showNewValue}}{{/showNewValue}}</pre></td>
+    <td>
+        <div class="hidden-sm hidden-xs action-buttons">
+            <a class="green log-edit" href="#" data-id="{{id}}">
+                <i class="ace-icon fa fa-pencil bigger-100"></i>
+            </a>
+        </div>
+    </td>
+</tr>
+{{/logList}}
+</script>
