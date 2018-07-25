@@ -20,7 +20,7 @@
     </select>
 
     <select id="getRoleIdListByUserId" parameterType="map" resultType="java.lang.Integer">
-      select  roleId
+      select  role_id
       from sys_role_user
       where 
           user_id = #{userId}

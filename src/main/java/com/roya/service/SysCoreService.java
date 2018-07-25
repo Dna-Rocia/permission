@@ -67,8 +67,8 @@ public class SysCoreService {
 	}
 
 	public boolean isSuperAdmin(){
-		//todo
-		return true;
+		//todo 自定义超级管理员的规则
+		return false;
 	}
 
 
@@ -118,7 +118,6 @@ public class SysCoreService {
 			}
 			return aclList;
 		}
-		return JsonMapper.string2Object(cacheValue, new TypeReference<List<SysAcl>>() {
-		});
+		return  JsonMapper.stringToObject(cacheValue,new TypeReference<List<SysAcl>>(){}.getType());
 	}
 }

@@ -1,5 +1,7 @@
 package com.roya.utils;
 
+import com.google.gson.*;
+import com.roya.model.SysAcl;
 import lombok.extern.slf4j.Slf4j;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -7,6 +9,10 @@ import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.ser.impl.SimpleFilterProvider;
 import org.codehaus.jackson.type.TypeReference;
+
+import java.lang.reflect.Type;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by idea
@@ -71,6 +77,18 @@ public class JsonMapper {
 			return null;
 		}
 
+	}
+
+
+	public static <T> T stringToObject(String src,Type type){
+		GsonBuilder builder = new GsonBuilder();
+		builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+			public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+				return new Date(json.getAsJsonPrimitive().getAsLong());
+			}
+		});
+		Gson gson = builder.create();
+		return gson.fromJson(src, type);
 	}
 
 }
