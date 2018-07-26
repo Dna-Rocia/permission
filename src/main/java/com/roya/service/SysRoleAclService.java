@@ -2,10 +2,14 @@ package com.roya.service;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.roya.beans.LogType;
 import com.roya.common.RequestHolder;
+import com.roya.dao.SysLogMapper;
 import com.roya.dao.SysRoleAclMapper;
+import com.roya.model.SysLogWithBLOBs;
 import com.roya.model.SysRoleAcl;
 import com.roya.utils.IpUtil;
+import com.roya.utils.JsonMapper;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +30,7 @@ public class SysRoleAclService {
 	@Resource
 	private SysRoleAclMapper sysRoleAclMapper;
 	@Resource
-	private SysLogService sysLogService;
+	private SysLogMapper sysLogMapper;
 
 	public void changeRoleAcls(Integer roleId,List<Integer> aclIdList){
 		//取出之前分配的权限
@@ -42,7 +46,7 @@ public class SysRoleAclService {
 			}
 		}
 		updateRoleAcls(roleId,aclIdList);
-		sysLogService.saveRoleAclLog(roleId,originAclIdList,aclIdList);
+		saveRoleAclLog(roleId,originAclIdList,aclIdList);
 	}
 
 
@@ -65,5 +69,16 @@ public class SysRoleAclService {
 		sysRoleAclMapper.batchInsert(roleAclList);
 	}
 
-
+	private void  saveRoleAclLog(int roleId, List<Integer> before, List<Integer> after){
+		SysLogWithBLOBs sysLog = new SysLogWithBLOBs();
+		sysLog.setType(LogType.TYPE_ROLE_ACL);
+		sysLog.setTargetId(roleId);
+		sysLog.setOldValue(before == null ? "" : JsonMapper.obj2String(before));
+		sysLog.setNewValue(after == null ? "" : JsonMapper.obj2String(after));
+		sysLog.setOperator(RequestHolder.getCurrentUser().getUsername());
+		sysLog.setOperateIp(IpUtil.getRemoteIp(RequestHolder.getCurrentRequest()));
+		sysLog.setOperateTime(new Date());
+		sysLog.setStatus(1);
+		sysLogMapper.insertSelective(sysLog);
+	}
 }

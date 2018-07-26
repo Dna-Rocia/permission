@@ -2,7 +2,6 @@ package com.roya.controller;
 
 import com.roya.beans.PageQuery;
 import com.roya.common.JsonData;
-import com.roya.param.AclParam;
 import com.roya.param.SearchLogParam;
 import com.roya.service.SysLogService;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +44,8 @@ public class SysLogController {
 	@RequestMapping("/recover.json")
 	@ResponseBody
 	public JsonData recover(@RequestParam("id") int id) {
-		return JsonData.success(sysLogService.searchPageList(param,pageQuery));
+		sysLogService.recover(id);
+		return JsonData.success();
 	}
 
 }

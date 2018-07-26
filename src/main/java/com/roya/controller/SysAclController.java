@@ -7,7 +7,6 @@ import com.roya.model.SysRole;
 import com.roya.param.AclParam;
 import com.roya.service.SysAclService;
 import com.roya.service.SysRoleService;
-import com.roya.service.SysUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

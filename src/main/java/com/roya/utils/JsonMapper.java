@@ -1,7 +1,6 @@
 package com.roya.utils;
 
 import com.google.gson.*;
-import com.roya.model.SysAcl;
 import lombok.extern.slf4j.Slf4j;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -12,7 +11,6 @@ import org.codehaus.jackson.type.TypeReference;
 
 import java.lang.reflect.Type;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by idea

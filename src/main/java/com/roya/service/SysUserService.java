@@ -93,7 +93,7 @@ public class SysUserService {
 		SysUser after = SysUser.builder().
 				id(param.getId()).username(param.getUsername()).
 				telephone(telephone).mail(param.getMail()).
-				status(param.getStatus()).remark(param.getRemark()).build();
+				status(param.getStatus()).remark(param.getRemark()).deptId(param.getDeptId()).build();
 		after.setOperator(RequestHolder.getCurrentUser().getUsername());
 		after.setOperateIp(IpUtil.getRemoteIp(RequestHolder.getCurrentRequest()));
 		after.setOperateTime(new Date());

@@ -2,13 +2,16 @@ package com.roya.service;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.roya.beans.LogType;
 import com.roya.common.RequestHolder;
+import com.roya.dao.SysLogMapper;
 import com.roya.dao.SysRoleUserMapper;
 import com.roya.dao.SysUserMapper;
-import com.roya.model.SysRoleAcl;
+import com.roya.model.SysLogWithBLOBs;
 import com.roya.model.SysRoleUser;
 import com.roya.model.SysUser;
 import com.roya.utils.IpUtil;
+import com.roya.utils.JsonMapper;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +34,7 @@ public class SysRoleUserService {
 	@Resource
 	private SysUserMapper sysUserMapper;
 	@Resource
-	private SysLogService sysLogService;
+	private SysLogMapper sysLogMapper;
 
 	public List<SysUser> getListByRoleId(int roleId){
 		List<Integer> userIdList = sysRoleUserMapper.getUserIdListByRoleId(roleId);
@@ -56,7 +59,7 @@ public class SysRoleUserService {
 			}
 		}
 		updateRoleUsers(roleId,userIdList);
-		sysLogService.saveRoleUserLog(roleId,originUserIdList,userIdList);
+		saveRoleUserLog(roleId,originUserIdList,userIdList);
 	}
 
 	@Transactional
@@ -80,4 +83,19 @@ public class SysRoleUserService {
 		}
 		sysRoleUserMapper.batchInsert(roleUserList);
 	}
+
+
+	private void  saveRoleUserLog(int roleId, List<Integer> before, List<Integer> after){
+		SysLogWithBLOBs sysLog = new SysLogWithBLOBs();
+		sysLog.setType(LogType.TYPE_ROLE_USER);
+		sysLog.setTargetId(roleId);
+		sysLog.setOldValue(before == null ? "" : JsonMapper.obj2String(before));
+		sysLog.setNewValue(after == null ? "" : JsonMapper.obj2String(after));
+		sysLog.setOperator(RequestHolder.getCurrentUser().getUsername());
+		sysLog.setOperateIp(IpUtil.getRemoteIp(RequestHolder.getCurrentRequest()));
+		sysLog.setOperateTime(new Date());
+		sysLog.setStatus(1);
+		sysLogMapper.insertSelective(sysLog);
+	}
+
 }

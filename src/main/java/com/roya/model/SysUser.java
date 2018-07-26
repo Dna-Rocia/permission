@@ -1,6 +1,5 @@
 package com.roya.model;
 
-import com.roya.utils.PhoneUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;

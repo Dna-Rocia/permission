@@ -6,7 +6,6 @@ import com.roya.dao.SysAclMapper;
 import com.roya.dao.SysAclModuleMapper;
 import com.roya.exception.ParamException;
 import com.roya.model.SysAclModule;
-import com.roya.model.SysDept;
 import com.roya.param.AclModuleParam;
 import com.roya.utils.BeanValidator;
 import com.roya.utils.IpUtil;
